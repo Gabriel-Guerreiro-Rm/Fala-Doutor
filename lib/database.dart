@@ -1,5 +1,5 @@
-import 'package.drift/drift.dart';
-import 'package:drift/postgres.dart';
+import 'package:drift/drift.dart';
+import 'package:drift_postgres/drift_postgres.dart';
 import 'package:postgres/postgres.dart' as pg;
 
 part 'database.g.dart';
@@ -22,27 +22,25 @@ class Pacientes extends Table {
 }
 
 @DriftDatabase(tables: [Medicos, Pacientes])
-
 class AppDatabase extends _$AppDatabase {
-
-  AppDatabase(super.e);
+  AppDatabase(QueryExecutor e) : super(e);
 
   @override
   int get schemaVersion => 1;
 }
 
-AppDatabase connect() {
-  final connection = pg.Endpoint(
-    host: 'localhost',
-    port: 5433,
-    database: 'fala_doutor',
-    username: 'postgres',
-    password: '12345678',
+Future<AppDatabase> connect() async {
+  final executor = PgDatabase(
+    endpoint: pg.Endpoint(
+      host: 'localhost',
+      database: 'fala_doutor',
+      username: 'postgres',
+      password: '123456789',
+    ),
+    settings: pg.ConnectionSettings(
+      sslMode: pg.SslMode.disable,
+    ),
+    logStatements: true,
   );
-
-  final db = AppDatabase(
-    PostgresDatabase.v2(endpoint: connection)
-  );
-
-  return db;
+  return AppDatabase(executor);
 }
