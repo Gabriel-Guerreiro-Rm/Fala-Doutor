@@ -11,31 +11,45 @@ class $MedicosTable extends Medicos with TableInfo<$MedicosTable, Medico> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nomeMeta = const VerificationMeta('nome');
   @override
   late final GeneratedColumn<String> nome = GeneratedColumn<String>(
-      'nome', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'nome',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _cpfMeta = const VerificationMeta('cpf');
   @override
   late final GeneratedColumn<String> cpf = GeneratedColumn<String>(
-      'cpf', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+    'cpf',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
   static const VerificationMeta _crmMeta = const VerificationMeta('crm');
   @override
   late final GeneratedColumn<String> crm = GeneratedColumn<String>(
-      'crm', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+    'crm',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
   @override
   List<GeneratedColumn> get $columns => [id, nome, cpf, crm];
   @override
@@ -44,8 +58,10 @@ class $MedicosTable extends Medicos with TableInfo<$MedicosTable, Medico> {
   String get actualTableName => $name;
   static const String $name = 'medicos';
   @override
-  VerificationContext validateIntegrity(Insertable<Medico> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Medico> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -53,19 +69,25 @@ class $MedicosTable extends Medicos with TableInfo<$MedicosTable, Medico> {
     }
     if (data.containsKey('nome')) {
       context.handle(
-          _nomeMeta, nome.isAcceptableOrUnknown(data['nome']!, _nomeMeta));
+        _nomeMeta,
+        nome.isAcceptableOrUnknown(data['nome']!, _nomeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nomeMeta);
     }
     if (data.containsKey('cpf')) {
       context.handle(
-          _cpfMeta, cpf.isAcceptableOrUnknown(data['cpf']!, _cpfMeta));
+        _cpfMeta,
+        cpf.isAcceptableOrUnknown(data['cpf']!, _cpfMeta),
+      );
     } else if (isInserting) {
       context.missing(_cpfMeta);
     }
     if (data.containsKey('crm')) {
       context.handle(
-          _crmMeta, crm.isAcceptableOrUnknown(data['crm']!, _crmMeta));
+        _crmMeta,
+        crm.isAcceptableOrUnknown(data['crm']!, _crmMeta),
+      );
     } else if (isInserting) {
       context.missing(_crmMeta);
     }
@@ -78,14 +100,22 @@ class $MedicosTable extends Medicos with TableInfo<$MedicosTable, Medico> {
   Medico map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Medico(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      nome: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}nome'])!,
-      cpf: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}cpf'])!,
-      crm: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}crm'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      nome: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nome'],
+      )!,
+      cpf: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cpf'],
+      )!,
+      crm: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}crm'],
+      )!,
     );
   }
 
@@ -100,11 +130,12 @@ class Medico extends DataClass implements Insertable<Medico> {
   final String nome;
   final String cpf;
   final String crm;
-  const Medico(
-      {required this.id,
-      required this.nome,
-      required this.cpf,
-      required this.crm});
+  const Medico({
+    required this.id,
+    required this.nome,
+    required this.cpf,
+    required this.crm,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -124,8 +155,10 @@ class Medico extends DataClass implements Insertable<Medico> {
     );
   }
 
-  factory Medico.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Medico.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Medico(
       id: serializer.fromJson<int>(json['id']),
@@ -146,11 +179,11 @@ class Medico extends DataClass implements Insertable<Medico> {
   }
 
   Medico copyWith({int? id, String? nome, String? cpf, String? crm}) => Medico(
-        id: id ?? this.id,
-        nome: nome ?? this.nome,
-        cpf: cpf ?? this.cpf,
-        crm: crm ?? this.crm,
-      );
+    id: id ?? this.id,
+    nome: nome ?? this.nome,
+    cpf: cpf ?? this.cpf,
+    crm: crm ?? this.crm,
+  );
   Medico copyWithCompanion(MedicosCompanion data) {
     return Medico(
       id: data.id.present ? data.id.value : this.id,
@@ -199,9 +232,9 @@ class MedicosCompanion extends UpdateCompanion<Medico> {
     required String nome,
     required String cpf,
     required String crm,
-  })  : nome = Value(nome),
-        cpf = Value(cpf),
-        crm = Value(crm);
+  }) : nome = Value(nome),
+       cpf = Value(cpf),
+       crm = Value(crm);
   static Insertable<Medico> custom({
     Expression<int>? id,
     Expression<String>? nome,
@@ -216,11 +249,12 @@ class MedicosCompanion extends UpdateCompanion<Medico> {
     });
   }
 
-  MedicosCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? nome,
-      Value<String>? cpf,
-      Value<String>? crm}) {
+  MedicosCompanion copyWith({
+    Value<int>? id,
+    Value<String>? nome,
+    Value<String>? cpf,
+    Value<String>? crm,
+  }) {
     return MedicosCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -268,35 +302,56 @@ class $PacientesTable extends Pacientes
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nomeMeta = const VerificationMeta('nome');
   @override
   late final GeneratedColumn<String> nome = GeneratedColumn<String>(
-      'nome', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'nome',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _cpfMeta = const VerificationMeta('cpf');
   @override
   late final GeneratedColumn<String> cpf = GeneratedColumn<String>(
-      'cpf', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _dataNascimentoMeta =
-      const VerificationMeta('dataNascimento');
+    'cpf',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _dataNascimentoMeta = const VerificationMeta(
+    'dataNascimento',
+  );
   @override
   late final GeneratedColumn<DateTime> dataNascimento =
-      GeneratedColumn<DateTime>('data_nascimento', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      GeneratedColumn<DateTime>(
+        'data_nascimento',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<PlanoSaude, String> plano =
-      GeneratedColumn<String>('plano', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<PlanoSaude>($PacientesTable.$converterplano);
+      GeneratedColumn<String>(
+        'plano',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<PlanoSaude>($PacientesTable.$converterplano);
   @override
   List<GeneratedColumn> get $columns => [id, nome, cpf, dataNascimento, plano];
   @override
@@ -305,8 +360,10 @@ class $PacientesTable extends Pacientes
   String get actualTableName => $name;
   static const String $name = 'pacientes';
   @override
-  VerificationContext validateIntegrity(Insertable<Paciente> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Paciente> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -314,21 +371,28 @@ class $PacientesTable extends Pacientes
     }
     if (data.containsKey('nome')) {
       context.handle(
-          _nomeMeta, nome.isAcceptableOrUnknown(data['nome']!, _nomeMeta));
+        _nomeMeta,
+        nome.isAcceptableOrUnknown(data['nome']!, _nomeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nomeMeta);
     }
     if (data.containsKey('cpf')) {
       context.handle(
-          _cpfMeta, cpf.isAcceptableOrUnknown(data['cpf']!, _cpfMeta));
+        _cpfMeta,
+        cpf.isAcceptableOrUnknown(data['cpf']!, _cpfMeta),
+      );
     } else if (isInserting) {
       context.missing(_cpfMeta);
     }
     if (data.containsKey('data_nascimento')) {
       context.handle(
+        _dataNascimentoMeta,
+        dataNascimento.isAcceptableOrUnknown(
+          data['data_nascimento']!,
           _dataNascimentoMeta,
-          dataNascimento.isAcceptableOrUnknown(
-              data['data_nascimento']!, _dataNascimentoMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_dataNascimentoMeta);
     }
@@ -341,17 +405,28 @@ class $PacientesTable extends Pacientes
   Paciente map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Paciente(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      nome: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}nome'])!,
-      cpf: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}cpf'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      nome: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nome'],
+      )!,
+      cpf: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cpf'],
+      )!,
       dataNascimento: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}data_nascimento'])!,
-      plano: $PacientesTable.$converterplano.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}plano'])!),
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}data_nascimento'],
+      )!,
+      plano: $PacientesTable.$converterplano.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}plano'],
+        )!,
+      ),
     );
   }
 
@@ -370,12 +445,13 @@ class Paciente extends DataClass implements Insertable<Paciente> {
   final String cpf;
   final DateTime dataNascimento;
   final PlanoSaude plano;
-  const Paciente(
-      {required this.id,
-      required this.nome,
-      required this.cpf,
-      required this.dataNascimento,
-      required this.plano});
+  const Paciente({
+    required this.id,
+    required this.nome,
+    required this.cpf,
+    required this.dataNascimento,
+    required this.plano,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -384,8 +460,9 @@ class Paciente extends DataClass implements Insertable<Paciente> {
     map['cpf'] = Variable<String>(cpf);
     map['data_nascimento'] = Variable<DateTime>(dataNascimento);
     {
-      map['plano'] =
-          Variable<String>($PacientesTable.$converterplano.toSql(plano));
+      map['plano'] = Variable<String>(
+        $PacientesTable.$converterplano.toSql(plano),
+      );
     }
     return map;
   }
@@ -400,16 +477,19 @@ class Paciente extends DataClass implements Insertable<Paciente> {
     );
   }
 
-  factory Paciente.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Paciente.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Paciente(
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
       cpf: serializer.fromJson<String>(json['cpf']),
       dataNascimento: serializer.fromJson<DateTime>(json['dataNascimento']),
-      plano: $PacientesTable.$converterplano
-          .fromJson(serializer.fromJson<String>(json['plano'])),
+      plano: $PacientesTable.$converterplano.fromJson(
+        serializer.fromJson<String>(json['plano']),
+      ),
     );
   }
   @override
@@ -420,24 +500,25 @@ class Paciente extends DataClass implements Insertable<Paciente> {
       'nome': serializer.toJson<String>(nome),
       'cpf': serializer.toJson<String>(cpf),
       'dataNascimento': serializer.toJson<DateTime>(dataNascimento),
-      'plano': serializer
-          .toJson<String>($PacientesTable.$converterplano.toJson(plano)),
+      'plano': serializer.toJson<String>(
+        $PacientesTable.$converterplano.toJson(plano),
+      ),
     };
   }
 
-  Paciente copyWith(
-          {int? id,
-          String? nome,
-          String? cpf,
-          DateTime? dataNascimento,
-          PlanoSaude? plano}) =>
-      Paciente(
-        id: id ?? this.id,
-        nome: nome ?? this.nome,
-        cpf: cpf ?? this.cpf,
-        dataNascimento: dataNascimento ?? this.dataNascimento,
-        plano: plano ?? this.plano,
-      );
+  Paciente copyWith({
+    int? id,
+    String? nome,
+    String? cpf,
+    DateTime? dataNascimento,
+    PlanoSaude? plano,
+  }) => Paciente(
+    id: id ?? this.id,
+    nome: nome ?? this.nome,
+    cpf: cpf ?? this.cpf,
+    dataNascimento: dataNascimento ?? this.dataNascimento,
+    plano: plano ?? this.plano,
+  );
   Paciente copyWithCompanion(PacientesCompanion data) {
     return Paciente(
       id: data.id.present ? data.id.value : this.id,
@@ -494,10 +575,10 @@ class PacientesCompanion extends UpdateCompanion<Paciente> {
     required String cpf,
     required DateTime dataNascimento,
     required PlanoSaude plano,
-  })  : nome = Value(nome),
-        cpf = Value(cpf),
-        dataNascimento = Value(dataNascimento),
-        plano = Value(plano);
+  }) : nome = Value(nome),
+       cpf = Value(cpf),
+       dataNascimento = Value(dataNascimento),
+       plano = Value(plano);
   static Insertable<Paciente> custom({
     Expression<int>? id,
     Expression<String>? nome,
@@ -514,12 +595,13 @@ class PacientesCompanion extends UpdateCompanion<Paciente> {
     });
   }
 
-  PacientesCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? nome,
-      Value<String>? cpf,
-      Value<DateTime>? dataNascimento,
-      Value<PlanoSaude>? plano}) {
+  PacientesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? nome,
+    Value<String>? cpf,
+    Value<DateTime>? dataNascimento,
+    Value<PlanoSaude>? plano,
+  }) {
     return PacientesCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -545,8 +627,9 @@ class PacientesCompanion extends UpdateCompanion<Paciente> {
       map['data_nascimento'] = Variable<DateTime>(dataNascimento.value);
     }
     if (plano.present) {
-      map['plano'] =
-          Variable<String>($PacientesTable.$converterplano.toSql(plano.value));
+      map['plano'] = Variable<String>(
+        $PacientesTable.$converterplano.toSql(plano.value),
+      );
     }
     return map;
   }
@@ -576,18 +659,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [medicos, pacientes];
 }
 
-typedef $$MedicosTableCreateCompanionBuilder = MedicosCompanion Function({
-  Value<int> id,
-  required String nome,
-  required String cpf,
-  required String crm,
-});
-typedef $$MedicosTableUpdateCompanionBuilder = MedicosCompanion Function({
-  Value<int> id,
-  Value<String> nome,
-  Value<String> cpf,
-  Value<String> crm,
-});
+typedef $$MedicosTableCreateCompanionBuilder =
+    MedicosCompanion Function({
+      Value<int> id,
+      required String nome,
+      required String cpf,
+      required String crm,
+    });
+typedef $$MedicosTableUpdateCompanionBuilder =
+    MedicosCompanion Function({
+      Value<int> id,
+      Value<String> nome,
+      Value<String> cpf,
+      Value<String> crm,
+    });
 
 class $$MedicosTableFilterComposer
     extends Composer<_$AppDatabase, $MedicosTable> {
@@ -599,16 +684,24 @@ class $$MedicosTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnFilters(column));
+    column: $table.nome,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get cpf => $composableBuilder(
-      column: $table.cpf, builder: (column) => ColumnFilters(column));
+    column: $table.cpf,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get crm => $composableBuilder(
-      column: $table.crm, builder: (column) => ColumnFilters(column));
+    column: $table.crm,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$MedicosTableOrderingComposer
@@ -621,16 +714,24 @@ class $$MedicosTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnOrderings(column));
+    column: $table.nome,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get cpf => $composableBuilder(
-      column: $table.cpf, builder: (column) => ColumnOrderings(column));
+    column: $table.cpf,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get crm => $composableBuilder(
-      column: $table.crm, builder: (column) => ColumnOrderings(column));
+    column: $table.crm,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MedicosTableAnnotationComposer
@@ -655,20 +756,24 @@ class $$MedicosTableAnnotationComposer
       $composableBuilder(column: $table.crm, builder: (column) => column);
 }
 
-class $$MedicosTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $MedicosTable,
-    Medico,
-    $$MedicosTableFilterComposer,
-    $$MedicosTableOrderingComposer,
-    $$MedicosTableAnnotationComposer,
-    $$MedicosTableCreateCompanionBuilder,
-    $$MedicosTableUpdateCompanionBuilder,
-    (Medico, BaseReferences<_$AppDatabase, $MedicosTable, Medico>),
-    Medico,
-    PrefetchHooks Function()> {
+class $$MedicosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MedicosTable,
+          Medico,
+          $$MedicosTableFilterComposer,
+          $$MedicosTableOrderingComposer,
+          $$MedicosTableAnnotationComposer,
+          $$MedicosTableCreateCompanionBuilder,
+          $$MedicosTableUpdateCompanionBuilder,
+          (Medico, BaseReferences<_$AppDatabase, $MedicosTable, Medico>),
+          Medico,
+          PrefetchHooks Function()
+        > {
   $$MedicosTableTableManager(_$AppDatabase db, $MedicosTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -677,63 +782,63 @@ class $$MedicosTableTableManager extends RootTableManager<
               $$MedicosTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$MedicosTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> nome = const Value.absent(),
-            Value<String> cpf = const Value.absent(),
-            Value<String> crm = const Value.absent(),
-          }) =>
-              MedicosCompanion(
-            id: id,
-            nome: nome,
-            cpf: cpf,
-            crm: crm,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String nome,
-            required String cpf,
-            required String crm,
-          }) =>
-              MedicosCompanion.insert(
-            id: id,
-            nome: nome,
-            cpf: cpf,
-            crm: crm,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> nome = const Value.absent(),
+                Value<String> cpf = const Value.absent(),
+                Value<String> crm = const Value.absent(),
+              }) => MedicosCompanion(id: id, nome: nome, cpf: cpf, crm: crm),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String nome,
+                required String cpf,
+                required String crm,
+              }) => MedicosCompanion.insert(
+                id: id,
+                nome: nome,
+                cpf: cpf,
+                crm: crm,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$MedicosTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $MedicosTable,
-    Medico,
-    $$MedicosTableFilterComposer,
-    $$MedicosTableOrderingComposer,
-    $$MedicosTableAnnotationComposer,
-    $$MedicosTableCreateCompanionBuilder,
-    $$MedicosTableUpdateCompanionBuilder,
-    (Medico, BaseReferences<_$AppDatabase, $MedicosTable, Medico>),
-    Medico,
-    PrefetchHooks Function()>;
-typedef $$PacientesTableCreateCompanionBuilder = PacientesCompanion Function({
-  Value<int> id,
-  required String nome,
-  required String cpf,
-  required DateTime dataNascimento,
-  required PlanoSaude plano,
-});
-typedef $$PacientesTableUpdateCompanionBuilder = PacientesCompanion Function({
-  Value<int> id,
-  Value<String> nome,
-  Value<String> cpf,
-  Value<DateTime> dataNascimento,
-  Value<PlanoSaude> plano,
-});
+typedef $$MedicosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MedicosTable,
+      Medico,
+      $$MedicosTableFilterComposer,
+      $$MedicosTableOrderingComposer,
+      $$MedicosTableAnnotationComposer,
+      $$MedicosTableCreateCompanionBuilder,
+      $$MedicosTableUpdateCompanionBuilder,
+      (Medico, BaseReferences<_$AppDatabase, $MedicosTable, Medico>),
+      Medico,
+      PrefetchHooks Function()
+    >;
+typedef $$PacientesTableCreateCompanionBuilder =
+    PacientesCompanion Function({
+      Value<int> id,
+      required String nome,
+      required String cpf,
+      required DateTime dataNascimento,
+      required PlanoSaude plano,
+    });
+typedef $$PacientesTableUpdateCompanionBuilder =
+    PacientesCompanion Function({
+      Value<int> id,
+      Value<String> nome,
+      Value<String> cpf,
+      Value<DateTime> dataNascimento,
+      Value<PlanoSaude> plano,
+    });
 
 class $$PacientesTableFilterComposer
     extends Composer<_$AppDatabase, $PacientesTable> {
@@ -745,22 +850,30 @@ class $$PacientesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnFilters(column));
+    column: $table.nome,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get cpf => $composableBuilder(
-      column: $table.cpf, builder: (column) => ColumnFilters(column));
+    column: $table.cpf,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get dataNascimento => $composableBuilder(
-      column: $table.dataNascimento,
-      builder: (column) => ColumnFilters(column));
+    column: $table.dataNascimento,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<PlanoSaude, PlanoSaude, String> get plano =>
       $composableBuilder(
-          column: $table.plano,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+        column: $table.plano,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 }
 
 class $$PacientesTableOrderingComposer
@@ -773,20 +886,29 @@ class $$PacientesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnOrderings(column));
+    column: $table.nome,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get cpf => $composableBuilder(
-      column: $table.cpf, builder: (column) => ColumnOrderings(column));
+    column: $table.cpf,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get dataNascimento => $composableBuilder(
-      column: $table.dataNascimento,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.dataNascimento,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get plano => $composableBuilder(
-      column: $table.plano, builder: (column) => ColumnOrderings(column));
+    column: $table.plano,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PacientesTableAnnotationComposer
@@ -808,26 +930,32 @@ class $$PacientesTableAnnotationComposer
       $composableBuilder(column: $table.cpf, builder: (column) => column);
 
   GeneratedColumn<DateTime> get dataNascimento => $composableBuilder(
-      column: $table.dataNascimento, builder: (column) => column);
+    column: $table.dataNascimento,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<PlanoSaude, String> get plano =>
       $composableBuilder(column: $table.plano, builder: (column) => column);
 }
 
-class $$PacientesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PacientesTable,
-    Paciente,
-    $$PacientesTableFilterComposer,
-    $$PacientesTableOrderingComposer,
-    $$PacientesTableAnnotationComposer,
-    $$PacientesTableCreateCompanionBuilder,
-    $$PacientesTableUpdateCompanionBuilder,
-    (Paciente, BaseReferences<_$AppDatabase, $PacientesTable, Paciente>),
-    Paciente,
-    PrefetchHooks Function()> {
+class $$PacientesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PacientesTable,
+          Paciente,
+          $$PacientesTableFilterComposer,
+          $$PacientesTableOrderingComposer,
+          $$PacientesTableAnnotationComposer,
+          $$PacientesTableCreateCompanionBuilder,
+          $$PacientesTableUpdateCompanionBuilder,
+          (Paciente, BaseReferences<_$AppDatabase, $PacientesTable, Paciente>),
+          Paciente,
+          PrefetchHooks Function()
+        > {
   $$PacientesTableTableManager(_$AppDatabase db, $PacientesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -836,53 +964,56 @@ class $$PacientesTableTableManager extends RootTableManager<
               $$PacientesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$PacientesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> nome = const Value.absent(),
-            Value<String> cpf = const Value.absent(),
-            Value<DateTime> dataNascimento = const Value.absent(),
-            Value<PlanoSaude> plano = const Value.absent(),
-          }) =>
-              PacientesCompanion(
-            id: id,
-            nome: nome,
-            cpf: cpf,
-            dataNascimento: dataNascimento,
-            plano: plano,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String nome,
-            required String cpf,
-            required DateTime dataNascimento,
-            required PlanoSaude plano,
-          }) =>
-              PacientesCompanion.insert(
-            id: id,
-            nome: nome,
-            cpf: cpf,
-            dataNascimento: dataNascimento,
-            plano: plano,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> nome = const Value.absent(),
+                Value<String> cpf = const Value.absent(),
+                Value<DateTime> dataNascimento = const Value.absent(),
+                Value<PlanoSaude> plano = const Value.absent(),
+              }) => PacientesCompanion(
+                id: id,
+                nome: nome,
+                cpf: cpf,
+                dataNascimento: dataNascimento,
+                plano: plano,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String nome,
+                required String cpf,
+                required DateTime dataNascimento,
+                required PlanoSaude plano,
+              }) => PacientesCompanion.insert(
+                id: id,
+                nome: nome,
+                cpf: cpf,
+                dataNascimento: dataNascimento,
+                plano: plano,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$PacientesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PacientesTable,
-    Paciente,
-    $$PacientesTableFilterComposer,
-    $$PacientesTableOrderingComposer,
-    $$PacientesTableAnnotationComposer,
-    $$PacientesTableCreateCompanionBuilder,
-    $$PacientesTableUpdateCompanionBuilder,
-    (Paciente, BaseReferences<_$AppDatabase, $PacientesTable, Paciente>),
-    Paciente,
-    PrefetchHooks Function()>;
+typedef $$PacientesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PacientesTable,
+      Paciente,
+      $$PacientesTableFilterComposer,
+      $$PacientesTableOrderingComposer,
+      $$PacientesTableAnnotationComposer,
+      $$PacientesTableCreateCompanionBuilder,
+      $$PacientesTableUpdateCompanionBuilder,
+      (Paciente, BaseReferences<_$AppDatabase, $PacientesTable, Paciente>),
+      Paciente,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

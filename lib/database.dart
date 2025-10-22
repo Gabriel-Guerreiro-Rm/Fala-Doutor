@@ -33,9 +33,10 @@ Future<AppDatabase> connect() async {
   final executor = PgDatabase(
     endpoint: pg.Endpoint(
       host: 'localhost',
+      port: 5432,
       database: 'fala_doutor',
       username: 'postgres',
-      password: '123456789',
+      password: '1234',
     ),
     settings: pg.ConnectionSettings(
       sslMode: pg.SslMode.disable,
