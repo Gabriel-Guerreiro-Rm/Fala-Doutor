@@ -2,20 +2,13 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
 import 'dart:convert';
-
-// Nosso arquivo de banco de dados, agora o cérebro da operação.
 import 'package:fala_doutor_api/database.dart';
-// Precisamos do Drift para usar o MedicosCompanion.
 import 'package:drift/drift.dart' show Value;
 
-
 void main() async {
-  // Conecta ao banco de dados e espera a conexão ficar pronta.
   final db = await connect();
-
   final app = Router();
 
-  // Rota raiz, para testar se a API está no ar.
   app.get('/', (Request request) {
     return Response.ok(
       jsonEncode({'message': 'Bem-vindo à API Fala Doutor!'}),
@@ -23,82 +16,158 @@ void main() async {
     );
   });
 
-  // --- CRUD DE MÉDICOS ---
-
-  // 1. READ (Ler todos os médicos)
   app.get('/medicos', (Request request) async {
-    final todosMedicos = await (db.select(db.medicos)).get();
-    final medicosJson = todosMedicos.map((medico) => medico.toJson()).toList();
-    return Response.ok(
-      jsonEncode(medicosJson),
-      headers: {'Content-Type': 'application/json'},
-    );
+    final medicos = await db.select(db.medicos).get();
+    final medicosJson = medicos.map((m) => m.toJson()).toList();
+    return Response.ok(jsonEncode(medicosJson),
+        headers: {'Content-Type': 'application/json'});
   });
 
-  // 2. CREATE (Criar um novo médico)
   app.post('/medicos', (Request request) async {
     final body = await request.readAsString();
-    final dadosJson = jsonDecode(body) as Map<String, dynamic>;
+    final dados = jsonDecode(body);
 
-    final companion = MedicosCompanion.insert(
-      nome: dadosJson['nome'],
-      cpf: dadosJson['cpf'],
-      crm: dadosJson['crm'],
+    final novo = MedicosCompanion.insert(
+      nome: dados['nome'],
+      cpf: dados['cpf'],
+      crm: dados['crm'],
     );
 
-    final novoMedico = await db.into(db.medicos).insertReturning(companion);
-    return Response.ok(
-      jsonEncode(novoMedico.toJson()),
-      headers: {'Content-Type': 'application/json'},
-    );
+    final medico = await db.into(db.medicos).insertReturning(novo);
+    return Response.ok(jsonEncode(medico.toJson()),
+        headers: {'Content-Type': 'application/json'});
   });
 
-  // 3. UPDATE (Atualizar um médico existente por ID)
   app.put('/medicos/<id>', (Request request, String id) async {
     final medicoId = int.parse(id);
     final body = await request.readAsString();
-    final dadosJson = jsonDecode(body) as Map<String, dynamic>;
+    final dados = jsonDecode(body);
 
-    final companion = MedicosCompanion(
-      nome: Value(dadosJson['nome']),
-      cpf: Value(dadosJson['cpf']),
-      crm: Value(dadosJson['crm']),
+    final update = MedicosCompanion(
+      nome: Value(dados['nome']),
+      cpf: Value(dados['cpf']),
+      crm: Value(dados['crm']),
     );
 
-    final medicoAtualizado = await (db.update(db.medicos)..where((tbl) => tbl.id.equals(medicoId))).writeReturning(companion);
-    
-    if (medicoAtualizado.isNotEmpty) {
-        return Response.ok(
-            jsonEncode(medicoAtualizado.first.toJson()),
-            headers: {'Content-Type': 'application/json'},
-        );
+    final result = await (db.update(db.medicos)
+          ..where((tbl) => tbl.id.equals(medicoId)))
+        .writeReturning(update);
+
+    if (result.isNotEmpty) {
+      return Response.ok(jsonEncode(result.first.toJson()),
+          headers: {'Content-Type': 'application/json'});
     } else {
-        return Response.notFound(
-            jsonEncode({'error': 'Médico com id $id não encontrado'}),
-            headers: {'Content-Type': 'application/json'},
-        );
+      return Response.notFound(jsonEncode({'error': 'Médico não encontrado'}),
+          headers: {'Content-Type': 'application/json'});
     }
   });
 
-  // 4. DELETE (Excluir um médico por ID)
   app.delete('/medicos/<id>', (Request request, String id) async {
     final medicoId = int.parse(id);
+    final deleted = await (db.delete(db.medicos)
+          ..where((tbl) => tbl.id.equals(medicoId)))
+        .go();
 
-    final rowsDeleted = await (db.delete(db.medicos)..where((tbl) => tbl.id.equals(medicoId))).go();
-
-    if (rowsDeleted > 0) {
+    if (deleted > 0) {
       return Response.ok(
-        jsonEncode({'message': 'Médico com id $id foi removido com sucesso'}),
-        headers: {'Content-Type': 'application/json'},
-      );
+          jsonEncode({'message': 'Médico com id $id removido com sucesso'}),
+          headers: {'Content-Type': 'application/json'});
     } else {
-      return Response.notFound(
-        jsonEncode({'error': 'Médico com id $id não encontrado'}),
-        headers: {'Content-Type': 'application/json'},
-      );
+      return Response.notFound(jsonEncode({'error': 'Médico não encontrado'}),
+          headers: {'Content-Type': 'application/json'});
     }
   });
 
+  bool planoValido(String? plano) {
+    if (plano == null) return false;
+    return ['plano1', 'plano2', 'plano3'].contains(plano);
+  }
+
+  app.get('/pacientes', (Request request) async {
+    final pacientes = await db.select(db.pacientes).get();
+    final pacientesJson = pacientes.map((p) => p.toJson()).toList();
+    return Response.ok(jsonEncode(pacientesJson),
+        headers: {'Content-Type': 'application/json'});
+  });
+
+  app.post('/pacientes', (Request request) async {
+    final body = await request.readAsString();
+    final dados = jsonDecode(body);
+
+    final plano = dados['plano']?.toString().toLowerCase();
+    if (!planoValido(plano)) {
+      return Response.badRequest(
+        body: jsonEncode(
+            {'error': 'Plano inválido. Use apenas: plano1, plano2 ou plano3'}),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+
+    final novo = PacientesCompanion.insert(
+      nome: dados['nome'],
+      cpf: dados['cpf'],
+      dataNascimento: DateTime.parse(dados['data_nascimento']),
+      plano: PlanoSaude.values
+          .firstWhere((p) => p.name.toLowerCase() == plano), // conversão segura
+    );
+
+    final paciente = await db.into(db.pacientes).insertReturning(novo);
+    return Response.ok(jsonEncode(paciente.toJson()),
+        headers: {'Content-Type': 'application/json'});
+  });
+
+  app.put('/pacientes/<id>', (Request request, String id) async {
+    final pacienteId = int.parse(id);
+    final body = await request.readAsString();
+    final dados = jsonDecode(body);
+
+    final plano = dados['plano']?.toString().toLowerCase();
+    if (plano != null && !planoValido(plano)) {
+      return Response.badRequest(
+        body: jsonEncode(
+            {'error': 'Plano inválido. Use apenas: plano1, plano2 ou plano3'}),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+
+    final update = PacientesCompanion(
+      nome: Value(dados['nome']),
+      cpf: Value(dados['cpf']),
+      dataNascimento: Value(DateTime.parse(dados['data_nascimento'])),
+      plano: plano != null
+          ? Value(PlanoSaude.values
+              .firstWhere((p) => p.name.toLowerCase() == plano))
+          : const Value.absent(),
+    );
+
+    final result = await (db.update(db.pacientes)
+          ..where((tbl) => tbl.id.equals(pacienteId)))
+        .writeReturning(update);
+
+    if (result.isNotEmpty) {
+      return Response.ok(jsonEncode(result.first.toJson()),
+          headers: {'Content-Type': 'application/json'});
+    } else {
+      return Response.notFound(jsonEncode({'error': 'Paciente não encontrado'}),
+          headers: {'Content-Type': 'application/json'});
+    }
+  });
+
+  app.delete('/pacientes/<id>', (Request request, String id) async {
+    final pacienteId = int.parse(id);
+    final deleted = await (db.delete(db.pacientes)
+          ..where((tbl) => tbl.id.equals(pacienteId)))
+        .go();
+
+    if (deleted > 0) {
+      return Response.ok(
+          jsonEncode({'message': 'Paciente com id $id removido com sucesso'}),
+          headers: {'Content-Type': 'application/json'});
+    } else {
+      return Response.notFound(jsonEncode({'error': 'Paciente não encontrado'}),
+          headers: {'Content-Type': 'application/json'});
+    }
+  });
 
   const port = 8080;
   final server = await io.serve(app, 'localhost', port);
